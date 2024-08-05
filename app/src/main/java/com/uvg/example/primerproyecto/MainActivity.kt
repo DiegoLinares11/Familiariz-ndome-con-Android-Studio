@@ -1,27 +1,44 @@
 package com.uvg.example.primerproyecto
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.uvg.example.primerproyecto.ui.theme.PrimerProyectoTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Habilita el diseño de borde a borde
+        enableEdgeToEdge()
         setContent {
             PrimerProyectoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                val snackbarHostState = remember { SnackbarHostState() }
+                val scope = rememberCoroutineScope()
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(snackbarHostState) }
+                ) { innerPadding ->
                     Greeting(
-                        name = "Android Studio",
+                        names = listOf("Android Studio", "Jetpack Compose", "Kotlin"),
+                        onButtonClick = {
+                            // Mostrar el Snackbar
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Botón presionado")
+                            }
+                            // Mostrar mensaje en Logcat
+                            Log.d("MainActivity", "Botón presionado")
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +48,52 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+fun Greeting(names: List<String>, onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        for (name in names) {
+            Text(
+                text = "Hello $name!",
+                modifier = Modifier.padding(vertical = 4.dp) // Espaciado entre textos
+            )
+        }
+        // Agregar el botón
+        GreetingButton(onClick = onButtonClick)
+        // Agregar el contenedor de elementos
+        ItemList(items = listOf("Item 1", "Item 2", "Item 3"))
+    }
+}
+
+@Composable
+fun GreetingButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = onClick,
         modifier = modifier
-    )
+            .padding(vertical = 8.dp)
+            .fillMaxWidth(), // Hacer que el botón ocupe todo el ancho disponible
+        colors = ButtonDefaults.buttonColors() // Puedes personalizar los colores si lo deseas
+    ) {
+        Text(text = "Press me")
+    }
+}
+
+@Composable
+fun ItemList(items: List<String>, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier.padding(16.dp)) {
+        items(items) { item ->
+            Text(
+                text = item,
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth()
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
     PrimerProyectoTheme {
-        Greeting("world como estamos")
+        Greeting(names = listOf("world", "cómo", "estamos"), onButtonClick = {})
     }
 }
