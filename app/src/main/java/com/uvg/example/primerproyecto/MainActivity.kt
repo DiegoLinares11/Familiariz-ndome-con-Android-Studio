@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uvg.example.primerproyecto.ui.theme.PrimerProyectoTheme
@@ -30,14 +31,14 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = { SnackbarHost(snackbarHostState) }
                 ) { innerPadding ->
                     Greeting(
-                        names = listOf("Android Studio", "Jetpack Compose", "Kotlin"),
+                        names = listOf("Android Studio", "Compose", "Kotlin"),
                         onButtonClick = {
                             // Mostrar el Snackbar
                             scope.launch {
                                 snackbarHostState.showSnackbar("Botón presionado")
                             }
                             // Mostrar mensaje en Logcat
-                            Log.d("MainActivity", "Botón presionado")
+                            Log.d("MainActivity", getString(R.string.AccionBoton))
                         },
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -52,13 +53,14 @@ fun Greeting(names: List<String>, onButtonClick: () -> Unit, modifier: Modifier 
     Column(modifier = modifier.padding(16.dp)) {
         for (name in names) {
             Text(
-                text = "Hello $name!",
+                text = stringResource(R.string.hello_template, name),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(vertical = 4.dp) // Espaciado entre textos
             )
         }
-        // Agregar el botón
+        // Agregar el botonn
         GreetingButton(onClick = onButtonClick)
-        // Agregar el contenedor de elementos
+        // Contenedor de elementos
         ItemList(items = listOf("Item 1", "Item 2", "Item 3"))
     }
 }
@@ -69,8 +71,11 @@ fun GreetingButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
         onClick = onClick,
         modifier = modifier
             .padding(vertical = 8.dp)
-            .fillMaxWidth(), // Hacer que el botón ocupe todo el ancho disponible
-        colors = ButtonDefaults.buttonColors() // Puedes personalizar los colores si lo deseas
+            .fillMaxWidth(), // Hacer que el boton ocupe todo el ancho disponible
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     ) {
         Text(text = "Press me")
     }
@@ -82,6 +87,7 @@ fun ItemList(items: List<String>, modifier: Modifier = Modifier) {
         items(items) { item ->
             Text(
                 text = item,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(vertical = 8.dp)
                     .fillMaxWidth()
