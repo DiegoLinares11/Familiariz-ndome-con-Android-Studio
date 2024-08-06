@@ -5,17 +5,22 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uvg.example.primerproyecto.ui.theme.PrimerProyectoTheme
+import androidx.compose.ui.res.painterResource
+
 import kotlinx.coroutines.launch
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,3 +108,18 @@ fun GreetingPreview() {
         Greeting(names = listOf("world", "cómo", "estamos"), onButtonClick = {})
     }
 }
+
+@Composable
+fun GreetingImage(message: String, from: String, modifier: Modifier = Modifier) {
+    val image = painterResource(R.drawable.eccac7b5937c015dac4763613efbe663)
+
+    Image(
+        painter = image,
+        contentDescription = null,
+        modifier = modifier
+            .size(128.dp) //
+    )
+}
+
+
+
